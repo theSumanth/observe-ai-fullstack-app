@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import type { AnnotatedTurn } from "../types";
 import { MomentBadge } from "./MomentBadge";
 
@@ -26,10 +26,11 @@ export function TranscriptView({
 }) {
   const refs = useRef<Map<number, HTMLDivElement>>(new Map());
 
-  if (scrollToTime !== null) {
+  useEffect(() => {
+    if (scrollToTime === null) return;
     const el = refs.current.get(scrollToTime);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
-  }
+  }, [scrollToTime]);
 
   if (turns.length === 0) {
     return (
