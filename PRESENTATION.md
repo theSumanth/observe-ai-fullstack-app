@@ -265,3 +265,37 @@ Render pulls image → deploys → live in ~3 min
 | `turns[].speaker` | `"agent"` \| `"customer"` | strict enum |
 | `turns[].text` | string | non-empty |
 | `turns[].t` | number | ≥ 0 (seconds from call start) |
+
+---
+
+## Potential Enhancements
+
+### 1. Persistent Database
+The storage layer is a single file (`calls.store.ts`) designed to swap. Replacing the in-memory Map with PostgreSQL via Prisma would take one file change — schema, queries, connection — with zero impact on services, controllers, or tests.
+
+### 2. LLM-Powered Moment Detection
+The current `detectMoments()` function is keyword-based and deterministic. Routing it through an LLM (with the transcript as context) would catch paraphrased escalations ("I'm going to take my business elsewhere"), sarcasm, implied frustration, and nuanced empathy — things keywords miss entirely.
+
+### 3. Real-Time Call Streaming
+Instead of ingesting a completed transcript, stream turns over a WebSocket as the call happens. Moments would fire live, allowing supervisors to intervene during an active escalation rather than reviewing it after the fact.
+
+### 4. Audio File Ingestion
+Accept an audio file (`.mp3` / `.wav`), transcribe it via Whisper or AssemblyAI, then pipe the transcript straight into the existing pipeline. The entire backend pipeline stays unchanged — only the ingest controller gains a new entry point.
+
+### 5. Agent Performance Dashboard
+Aggregate call-level scores into per-agent trends over time — rolling empathy score, escalation rate, dead air frequency, average sentiment arc. Supervisors could spot declining agents weeks before it becomes a retention or CSAT problem.
+
+### 6. Configurable Detection Rules
+Expose the keyword lists, dead air threshold, and monologue word limit as config (per-tenant or per-team settings stored in the DB). Different contact center teams have different definitions of what constitutes an escalation or a long monologue.
+
+### 7. Call Scoring & QA Forms
+Let supervisors attach a structured scorecard to each call — custom criteria, weighted scores, pass/fail thresholds. Auto-populate sections from detected moments and let the supervisor override or annotate each one.
+
+### 8. Multi-Tenant Support
+Add workspace isolation so multiple teams or clients share one deployment without seeing each other's calls. Scoped API keys, per-tenant storage, and role-based access (supervisor vs. agent read-only view).
+
+### 9. Export & Reporting
+Export call reviews as PDF or CSV for compliance audits, weekly QA reports, or sharing with agents directly. Scheduled email digests summarising team performance for the week.
+
+### 10. CI Pipeline
+Add the test stage to GitHub Actions so tests run on every PR — not just in Docker locally. A failed test blocks the merge; a passing suite triggers the tag-based deploy automatically.
