@@ -1,6 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { z } from "zod";
+
+const IngestSchema = z.object({
+  callId: z.string().min(1, "callId is required"),
+  agentName: z.string().min(1, "agentName is required"),
+  duration: z.number().positive("duration must be a positive number in seconds"),
+  turns: z.array(z.object({
+    speaker: z.enum(["agent", "customer"], { error: 'speaker must be "agent" or "customer"' }),
+    text: z.string().min(1, "turn text cannot be empty"),
+    t: z.number().nonnegative("t (timestamp) must be 0 or greater"),
+  })).min(1, "turns must have at least one entry"),
+});
 import {
   Search, Upload, Phone, TrendingUp, TrendingDown,
   Minus, AlertTriangle, Heart, Clock, Zap, ChevronRight,
@@ -105,21 +117,36 @@ export default function CallListPage() {
   };
 
   const handleIngestJson = () => {
+    // Step 1: syntax check
+    let parsed: unknown;
     try {
-      const parsed = JSON.parse(jsonInput);
-      ingest.mutate(parsed, {
-        onSuccess: (res) => {
-          toast.success(`Call ingested — ${res.momentCount} moments detected`);
-          setDialogOpen(false);
-          setJsonInput("");
-        },
-        onError: (err: unknown) => {
-          toast.error(err instanceof Error ? err.message : "Ingestion failed");
-        },
-      });
+      parsed = JSON.parse(jsonInput);
     } catch {
-      toast.error("Invalid JSON");
+      toast.error("Invalid JSON — check for missing brackets or commas");
+      return;
     }
+
+    // Step 2: structure validation (no round-trip needed)
+    const result = IngestSchema.safeParse(parsed);
+    if (!result.success) {
+      const first = result.error.issues[0];
+      const field = first.path.join(".");
+      const msg = field ? `${field}: ${first.message}` : first.message;
+      toast.error(msg);
+      return;
+    }
+
+    // Step 3: send to API
+    ingest.mutate(result.data, {
+      onSuccess: (res) => {
+        toast.success(`Call ingested — ${res.momentCount} moments detected`);
+        setDialogOpen(false);
+        setJsonInput("");
+      },
+      onError: (err: unknown) => {
+        toast.error(err instanceof Error ? err.message : "Ingestion failed");
+      },
+    });
   };
 
   const totalMoments = calls?.reduce((s, c) => s + c.momentCount, 0) ?? 0;
