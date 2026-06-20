@@ -32,4 +32,8 @@ export const callsStore = {
   exists(callId: string): boolean {
     return store.has(callId);
   },
+
+  clear(): void {
+    store.clear();
+  },
 };
