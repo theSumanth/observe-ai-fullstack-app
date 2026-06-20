@@ -15,7 +15,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useCalls, useIngestCall } from "../hooks/useCalls";
-import { CallListItem } from "../types";
+import type { CallListItem } from "../types";
 
 const DEMO_CALL = {
   callId: `DEMO-${Date.now()}`,

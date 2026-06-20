@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Summary } from "../types";
+import type { Summary } from "../types";
 
 function ArcBadge({ arc }: { arc: Summary["sentimentArc"] }) {
   const map = {

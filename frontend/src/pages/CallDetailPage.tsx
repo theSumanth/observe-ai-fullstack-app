@@ -9,7 +9,7 @@ import { useCall, useCallMoments } from "../hooks/useCalls";
 import { TranscriptView } from "../components/TranscriptView";
 import { SummaryPanel } from "../components/SummaryPanel";
 import { MomentsSidebar } from "../components/MomentsSidebar";
-import { MomentType } from "../types";
+import type { MomentType } from "../types";
 
 export default function CallDetailPage() {
   const { id } = useParams<{ id: string }>();

@@ -1,5 +1,5 @@
 import { Clock } from "lucide-react";
-import { Moment, MomentType } from "../types";
+import type { Moment, MomentType } from "../types";
 import { MomentBadge } from "./MomentBadge";
 
 function formatTime(seconds: number) {

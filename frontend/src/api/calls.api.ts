@@ -1,5 +1,5 @@
 import client from "./client";
-import { CallListItem, CallDetail, Moment } from "../types";
+import type { CallListItem, CallDetail, Moment } from "../types";
 
 export const callsApi = {
   list: (agent?: string) =>

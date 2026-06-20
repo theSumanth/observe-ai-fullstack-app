@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { MomentType } from "../types";
+import type { MomentType } from "../types";
 
 const config: Record<MomentType, { label: string; className: string }> = {
   escalation_signal: {

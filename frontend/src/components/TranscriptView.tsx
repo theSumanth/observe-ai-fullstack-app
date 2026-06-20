@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { AnnotatedTurn } from "../types";
+import type { AnnotatedTurn } from "../types";
 import { MomentBadge } from "./MomentBadge";
 
 function formatTime(seconds: number) {
