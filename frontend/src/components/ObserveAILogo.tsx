@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const sizes = {
   sm: { img: "h-6 w-6", text: "text-sm" },
   md: { img: "h-8 w-8", text: "text-base" },
@@ -7,7 +9,7 @@ const sizes = {
 export function ObserveAILogo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   const s = sizes[size];
   return (
-    <div className="flex items-center gap-2 shrink-0">
+    <Link to="/" className="flex items-center gap-2 shrink-0 hover:opacity-80 transition-opacity">
       <img
         src="/observeai_logo.jfif"
         alt="Observe.AI"
@@ -16,6 +18,6 @@ export function ObserveAILogo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
       <span className={`${s.text} font-bold tracking-widest text-foreground`}>
         OBSERVE<span className="text-primary">.AI</span>
       </span>
-    </div>
+    </Link>
   );
 }
