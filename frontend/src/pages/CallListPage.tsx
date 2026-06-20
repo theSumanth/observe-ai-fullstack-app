@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { useCalls, useIngestCall } from "../hooks/useCalls";
+import { ObserveAILogo } from "../components/ObserveAILogo";
 import type { CallListItem } from "../types";
 
 const DEMO_CALL = {
@@ -132,10 +133,7 @@ export default function CallListPage() {
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-primary rounded-lg p-1.5">
-              <Phone className="h-4 w-4 text-primary-foreground" />
-            </div>
-            <span className="font-semibold text-foreground tracking-tight">Observe.AI</span>
+            <ObserveAILogo size="sm" />
             <Separator orientation="vertical" className="h-4 mx-1" />
             <span className="text-sm text-muted-foreground">Call Quality Review</span>
           </div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Phone, Clock, Layers } from "lucide-react";
+import { ObserveAILogo } from "../components/ObserveAILogo";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -56,6 +57,8 @@ export default function CallDetailPage() {
       {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="h-14 px-4 flex items-center gap-3">
+          <ObserveAILogo size="sm" />
+          <Separator orientation="vertical" className="h-4" />
           <Button
             variant="ghost"
             size="sm"
