@@ -8,19 +8,16 @@ function formatTime(seconds: number) {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-function turnBorderColor(turn: AnnotatedTurn) {
+function turnAccent(turn: AnnotatedTurn) {
   const types = turn.moments.map((m) => m.type);
-  if (types.includes("escalation_signal")) return "border-l-red-500";
-  if (types.includes("dead_air")) return "border-l-yellow-400";
-  if (types.includes("empathy_statement")) return "border-l-green-500";
-  if (types.includes("long_monologue")) return "border-l-blue-500";
-  return "border-l-transparent";
+  if (types.includes("escalation_signal")) return "border-l-red-500 bg-red-500/5";
+  if (types.includes("dead_air")) return "border-l-amber-400 bg-amber-400/5";
+  if (types.includes("empathy_statement")) return "border-l-emerald-500 bg-emerald-500/5";
+  if (types.includes("long_monologue")) return "border-l-blue-500 bg-blue-500/5";
+  return "border-l-border bg-transparent";
 }
 
-export function TranscriptView({
-  turns,
-  scrollToTime,
-}: {
+export function TranscriptView({ turns, scrollToTime }: {
   turns: AnnotatedTurn[];
   scrollToTime: number | null;
 }) {
@@ -34,33 +31,29 @@ export function TranscriptView({
 
   if (turns.length === 0) {
     return (
-      <div className="text-center py-12 text-muted-foreground text-sm">
+      <div className="text-center py-16 text-muted-foreground text-sm">
         No transcript turns found.
       </div>
     );
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2 max-w-3xl">
       {turns.map((turn, i) => (
         <div
           key={i}
-          ref={(el) => {
-            if (el) refs.current.set(turn.t, el);
-          }}
-          className={`border-l-4 pl-3 py-2 rounded-r-md transition-colors ${turnBorderColor(turn)} ${
-            turn.moments.length > 0 ? "bg-muted/40" : ""
-          }`}
+          ref={(el) => { if (el) refs.current.set(turn.t, el); }}
+          className={`border-l-2 pl-4 pr-3 py-3 rounded-r-lg transition-colors ${turnAccent(turn)}`}
         >
-          <div className="flex items-center gap-2 mb-1">
-            <span
-              className={`text-xs font-semibold uppercase tracking-wide ${
-                turn.speaker === "agent" ? "text-blue-600" : "text-orange-600"
-              }`}
-            >
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className={`text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded ${
+              turn.speaker === "agent"
+                ? "bg-primary/10 text-primary"
+                : "bg-orange-400/10 text-orange-400"
+            }`}>
               {turn.speaker}
             </span>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-[10px] text-muted-foreground font-mono">
               {formatTime(turn.t)}
             </span>
             <div className="flex gap-1 flex-wrap">
@@ -69,7 +62,7 @@ export function TranscriptView({
               ))}
             </div>
           </div>
-          <p className="text-sm text-foreground leading-relaxed">{turn.text}</p>
+          <p className="text-sm text-foreground/90 leading-relaxed">{turn.text}</p>
         </div>
       ))}
     </div>
