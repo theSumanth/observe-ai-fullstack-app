@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "shadcn": {
+      "command": "npx",
+      "args": [
+        "shadcn@latest",
+        "mcp"
+      ]
+    },
+    "postgres": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\Asus\\AppData\\Roaming\\npm\\node_modules\\@modelcontextprotocol\\server-postgres\\dist\\index.js",
+        "postgresql://dev:dev@localhost:5432/appdb"
+      ]
+    }
+  }
+}
