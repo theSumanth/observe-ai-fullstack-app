@@ -1,7 +1,7 @@
-import Anthropic from "@anthropic-ai/sdk";
-import { Turn, Moment } from "../types";
+import Groq from "groq-sdk";
+import type { Turn, Moment } from "../types";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export async function generateCoachingNotes(
   agentName: string,
@@ -26,14 +26,13 @@ ${momentSummary || "None detected"}
 
 Write exactly 3 concise coaching bullet points for this agent. Focus on specific, actionable feedback based on what happened in this call. Be constructive and professional. Return only the 3 bullet points, one per line, starting with "•".`;
 
-  const response = await client.messages.create({
-    model: "claude-sonnet-4-6",
+  const response = await client.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
     max_tokens: 512,
     messages: [{ role: "user", content: prompt }],
   });
 
-  const text =
-    response.content[0].type === "text" ? response.content[0].text : "";
+  const text = response.choices[0]?.message?.content ?? "";
 
   return text
     .split("\n")

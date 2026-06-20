@@ -10,7 +10,7 @@ import { errorHandler } from "./middleware/errorHandler";
 const EnvSchema = z.object({
   PORT: z.coerce.number().default(3000),
   NODE_ENV: z.string().default("development"),
-  ANTHROPIC_API_KEY: z.string(),
+  GROQ_API_KEY: z.string(),
 });
 
 const env = EnvSchema.parse(process.env);
