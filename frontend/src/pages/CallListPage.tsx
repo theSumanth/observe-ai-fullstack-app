@@ -99,7 +99,8 @@ export default function CallListPage() {
     const demo = { ...DEMO_CALL, callId: `DEMO-${Date.now()}` };
     ingest.mutate(demo, {
       onSuccess: (res) => toast.success(`Demo call loaded — ${res.momentCount} moments detected`),
-      onError: () => toast.error("Failed to load demo call"),
+      onError: (err: unknown) =>
+        toast.error(err instanceof Error ? err.message : "Failed to load demo call"),
     });
   };
 

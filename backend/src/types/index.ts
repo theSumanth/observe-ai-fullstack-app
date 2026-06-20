@@ -1,6 +1,8 @@
 import { z } from "zod";
 
-export const SpeakerSchema = z.enum(["agent", "customer"]);
+export const SpeakerSchema = z.enum(["agent", "customer"], {
+  error: 'speaker must be "agent" or "customer"',
+});
 export type Speaker = z.infer<typeof SpeakerSchema>;
 
 export const MomentTypeSchema = z.enum([
@@ -16,16 +18,16 @@ export type SentimentArc = z.infer<typeof SentimentArcSchema>;
 
 export const TurnSchema = z.object({
   speaker: SpeakerSchema,
-  text: z.string().min(1),
-  t: z.number().nonnegative(),
+  text: z.string().min(1, "turn text cannot be empty"),
+  t: z.number().nonnegative("t (timestamp) must be 0 or greater"),
 });
 export type Turn = z.infer<typeof TurnSchema>;
 
 export const IngestCallSchema = z.object({
-  callId: z.string().min(1),
-  agentName: z.string().min(1),
-  duration: z.number().positive(),
-  turns: z.array(TurnSchema).min(1),
+  callId: z.string().min(1, "callId is required"),
+  agentName: z.string().min(1, "agentName is required"),
+  duration: z.number().positive("duration must be a positive number in seconds"),
+  turns: z.array(TurnSchema).min(1, "turns must have at least one entry"),
 });
 export type IngestCallInput = z.infer<typeof IngestCallSchema>;
 

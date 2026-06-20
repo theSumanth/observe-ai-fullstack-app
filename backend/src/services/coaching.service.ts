@@ -26,17 +26,53 @@ ${momentSummary || "None detected"}
 
 Write exactly 3 concise coaching bullet points for this agent. Focus on specific, actionable feedback based on what happened in this call. Be constructive and professional. Return only the 3 bullet points, one per line, starting with "•".`;
 
-  const response = await client.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
-    max_tokens: 512,
-    messages: [{ role: "user", content: prompt }],
-  });
+  try {
+    const response = await client.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      max_tokens: 512,
+      messages: [{ role: "user", content: prompt }],
+    });
 
-  const text = response.choices[0]?.message?.content ?? "";
+    const text = response.choices[0]?.message?.content ?? "";
+    const bullets = text
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line.startsWith("•"))
+      .slice(0, 3);
 
-  return text
-    .split("\n")
-    .map((line) => line.trim())
-    .filter((line) => line.startsWith("•"))
-    .slice(0, 3);
+    if (bullets.length > 0) return bullets;
+  } catch {
+    // Groq unavailable — fall through to deterministic fallback
+  }
+
+  return buildFallbackNotes(moments);
+}
+
+function buildFallbackNotes(moments: Moment[]): string[] {
+  const notes: string[] = [];
+  const types = moments.map((m) => m.type);
+
+  if (types.includes("escalation_signal")) {
+    notes.push("• De-escalation opportunity: customer showed signs of frustration — practise using calm, solution-first language before offering an escalation path.");
+  }
+  if (types.includes("empathy_statement")) {
+    notes.push("• Good empathy usage detected — continue acknowledging customer emotions early in the call to build rapport.");
+  }
+  if (types.includes("dead_air")) {
+    notes.push("• Dead air detected: narrate your actions while on hold (e.g. 'I'm pulling up your account now') to keep customers engaged.");
+  }
+  if (types.includes("long_monologue")) {
+    notes.push("• Long monologue detected: break up lengthy explanations with check-in questions to confirm customer understanding.");
+  }
+
+  while (notes.length < 3) {
+    const defaults = [
+      "• Aim to confirm customer understanding at least once per call before wrapping up.",
+      "• Close every call with a clear next-step summary so customers know what to expect.",
+      "• Use the customer's name at least twice during the call to personalise the interaction.",
+    ];
+    notes.push(defaults[notes.length]);
+  }
+
+  return notes.slice(0, 3);
 }
